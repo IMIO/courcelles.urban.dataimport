@@ -1,0 +1,4 @@
+include *.cfg *.rst *.in
+graft src/courcelles/urban
+graft docs
+global-exclude *pyc

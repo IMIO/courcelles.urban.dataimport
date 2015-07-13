@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<import-steps>
+
+ <import-step
+    id="courcelles.urban.dataimport-courcellesUrbawebImport"
+    handler="courcelles.urban.dataimport.importer.importCourcellesUrbaweb"
+    title="Urbaweb import for Courcelles">
+  Urbaweb import for Courcelles
+ </import-step>
+
+</import-steps>

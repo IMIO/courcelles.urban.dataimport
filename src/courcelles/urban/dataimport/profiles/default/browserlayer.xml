@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<layers>
+  <layer
+      name="courcelles.urban.dataimport"
+      interface="courcelles.urban.dataimport.interfaces.ICourcellesUrbanDataimportLayer"
+  />
+</layers>
