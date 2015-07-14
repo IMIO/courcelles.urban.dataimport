@@ -10,3 +10,21 @@ class CourcellesDataImporter(AccessDataImporter):
     """ """
 
     implements(ICourcellesDataImporter)
+
+
+class CourcellesArchitectsImporter(AccessDataImporter):
+    """ """
+
+    implements(ICourcellesDataImporter)
+
+
+class CourcellesNotariesImporter(AccessDataImporter):
+    """ """
+
+    implements(ICourcellesDataImporter)
+
+
+class CourcellesParcellingsImporter(AccessDataImporter):
+    """ """
+
+    implements(ICourcellesDataImporter)
