@@ -40,7 +40,7 @@
     <adapter
         for="courcelles.urban.dataimport.settings.CourcellesImporterSettingsForm"
         factory=".settings.CourcellesImporterFromImportSettings"
-        provides="imio.urban.dataimport.access.interfaces.IAccessDataImporter"
+        provides="imio.urban.dataimport.access.interfaces.IAccessImporter"
     />
 
 </configure>
