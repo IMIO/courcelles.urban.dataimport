@@ -10,5 +10,5 @@ class ICourcellesUrbanDataimportLayer(IDefaultPloneLayer):
     """ Marker interface that defines a Zope 3 browser layer."""
 
 
-class ICourcellesDataImporter(IUrbanDataImporter):
-    """ Marker interface for ICourcelles access importer """
+class ILicencesImporter(IUrbanDataImporter):
+    """ Marker interface for Courcelles access importer """

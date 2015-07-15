@@ -2,23 +2,31 @@
 
 from zope.interface import implements
 
+# from courcelles.urban.dataimport.licences import mapping
+from courcelles.urban.dataimport.interfaces import ILicencesImporter
 from imio.urban.dataimport.access.importer import AccessDataImporter
-from courcelles.urban.dataimport.interfaces import ICourcellesDataImporter
+from imio.urban.dataimport.mapping import ObjectsMapping
+from imio.urban.dataimport.mapping import ValuesMapping
 
 
-class CourcellesDataImporter(AccessDataImporter):
+class LicencesImporter(AccessDataImporter):
     """ """
 
-    implements(ICourcellesDataImporter)
+    implements(ILicencesImporter)
 
 
-class CourcellesNotariesImporter(AccessDataImporter):
+class LicencesMapping(ObjectsMapping):
     """ """
 
-    implements(ICourcellesDataImporter)
+    def getObjectsNesting(self):
+        return  # mapping.OBJECTS_NESTING
+
+    def getFieldsMapping(self):
+        return  # mapping.FIELDS_MAPPINGS
 
 
-class CourcellesParcellingsImporter(AccessDataImporter):
+class LicencesValuesMapping(ValuesMapping):
     """ """
 
-    implements(ICourcellesDataImporter)
+    def getValueMapping(self, mapping_name):
+        return

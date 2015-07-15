@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from zope.interface import implements
-
-from courcelles.urban.dataimport.architects import mapping
-from imio.urban.dataimport.csv.importer import CSVDataImporter
+from courcelles.urban.dataimport.notaries import mapping
+from imio.urban.dataimport.access.importer import AccessDataImporter
 from imio.urban.dataimport.mapping import ObjectsMapping
 from imio.urban.dataimport.mapping import ValuesMapping
 
 
-class ArchitectsImporter(CSVDataImporter):
+class NotariesImporter(AccessDataImporter):
     """ """
 
 
-class ArchitectsMapping(ObjectsMapping):
+class NotariesMapping(ObjectsMapping):
     """ """
 
     def getObjectsNesting(self):
@@ -22,7 +20,7 @@ class ArchitectsMapping(ObjectsMapping):
         return mapping.FIELDS_MAPPINGS
 
 
-class ArchitectsValuesMapping(ValuesMapping):
+class NotariesValuesMapping(ValuesMapping):
     """ """
 
     def getValueMapping(self, mapping_name):

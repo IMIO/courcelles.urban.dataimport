@@ -15,8 +15,8 @@
     <includeDependencies package="." />
 
     <include package=".architects" />
-    <!--include package=".notaries" />
-    <include package=".parcellings" /-->
+    <include package=".notaries" />
+    <!--include package=".parcellings" /-->
 
     <!-- Register the installation GenericSetup extension profile -->
     <genericsetup:registerProfile
@@ -39,12 +39,6 @@
         for="Products.CMFPlone.interfaces.IPloneSiteRoot"
         class=".settings.CourcellesImporterSettings"
         permission="zope2.View"
-    />
-
-    <adapter
-        for="courcelles.urban.dataimport.settings.CourcellesImporterSettingsForm"
-        factory=".settings.CourcellesImporterFromImportSettings"
-        provides="imio.urban.dataimport.access.interfaces.IAccessImporter"
     />
 
 </configure>
