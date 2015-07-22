@@ -16,7 +16,7 @@
 
     <include package=".architects" />
     <include package=".notaries" />
-    <!--include package=".parcellings" /-->
+    <include package=".parcellings" />
 
     <!-- Register the installation GenericSetup extension profile -->
     <genericsetup:registerProfile
