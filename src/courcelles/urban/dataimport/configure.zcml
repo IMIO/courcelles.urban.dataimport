@@ -17,6 +17,7 @@
     <include package=".architects" />
     <include package=".notaries" />
     <include package=".parcellings" />
+    <!--include package=".licences" /-->
 
     <!-- Register the installation GenericSetup extension profile -->
     <genericsetup:registerProfile
@@ -25,7 +26,7 @@
         directory="profiles/default"
         description="Extension profile for courcelles.urban.dataimport."
         provides="Products.GenericSetup.interfaces.EXTENSION"
-        />
+    />
 
     <genericsetup:importStep
         name="courcelles.urban.dataimport-postInstall"
@@ -37,7 +38,7 @@
     <browser:page
         name="dataimport-controlpanel"
         for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-        class=".settings.CourcellesImporterSettings"
+        class=".settings.CourcellesImporterControlPanel"
         permission="zope2.View"
     />
 
