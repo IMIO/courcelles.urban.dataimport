@@ -23,6 +23,8 @@ from courcelles.urban.dataimport.licences.mappers import ObservationsMapper
 from courcelles.urban.dataimport.licences.mappers import ParcelFactory
 from courcelles.urban.dataimport.licences.mappers import ParcelReferencesMapper
 from courcelles.urban.dataimport.licences.mappers import PortalTypeMapper
+from courcelles.urban.dataimport.licences.mappers import PrimoDateMapper
+from courcelles.urban.dataimport.licences.mappers import PrimoEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import UrbanEventFactory
 from courcelles.urban.dataimport.licences.mappers import WorklocationMapper
 
@@ -36,6 +38,7 @@ OBJECTS_NESTING = [
             ('DEPOSIT EVENT', []),
             ('INCOMPLETE FOLDER EVENT', []),
             ('COMPLETE FOLDER EVENT', []),
+            ('PRIMO RW EVENT', []),
             ('DECISION EVENT', []),
         ],
     ),
@@ -214,6 +217,25 @@ FIELDS_MAPPINGS = {
 
             CompleteFolderDateMapper: {
                 'from': 'dateaccuseréception',
+                'to': 'eventDate',
+            },
+        },
+    },
+
+    'PRIMO RW EVENT':
+    {
+        'factory': [UrbanEventFactory],
+
+        'allowed_containers': ['BuildLicence', 'ParcelOutLicence'],
+
+        'mappers': {
+            PrimoEventTypeMapper: {
+                'from': (),
+                'to': 'eventtype',
+            },
+
+            PrimoDateMapper: {
+                'from': 'dateenvoiprédossier',
                 'to': 'eventDate',
             },
         },

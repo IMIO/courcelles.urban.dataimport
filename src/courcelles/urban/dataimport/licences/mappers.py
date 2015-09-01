@@ -543,6 +543,30 @@ class CompleteFolderDateMapper(Mapper):
         return date
 
 #
+# UrbanEvent primo RW
+#
+
+#mappers
+
+
+class PrimoEventTypeMapper(Mapper):
+    def mapEventtype(self, line):
+        licence = self.importer.current_containers_stack[-1]
+        urban_tool = api.portal.get_tool('portal_urban')
+        eventtype_id = 'transmis-1er-dossier-rw'
+        config = urban_tool.getUrbanConfig(licence)
+        return getattr(config.urbaneventtypes, eventtype_id).UID()
+
+
+class PrimoDateMapper(Mapper):
+    def mapEventdate(self, line):
+        date = self.getData('dateenvoiprédossier')
+        date = date and DateTime(date) or None
+        if not date:
+            raise NoObjectToCreateException
+        return date
+
+#
 # UrbanEvent decision
 #
 
