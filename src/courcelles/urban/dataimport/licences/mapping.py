@@ -18,6 +18,8 @@ from courcelles.urban.dataimport.licences.mappers import ErrorsMapper
 from courcelles.urban.dataimport.licences.mappers import LicenceFactory
 from courcelles.urban.dataimport.licences.mappers import NotificationDateMapper
 from courcelles.urban.dataimport.licences.mappers import ObservationsMapper
+from courcelles.urban.dataimport.licences.mappers import ParcelFactory
+from courcelles.urban.dataimport.licences.mappers import ParcelReferencesMapper
 from courcelles.urban.dataimport.licences.mappers import PortalTypeMapper
 from courcelles.urban.dataimport.licences.mappers import UrbanEventFactory
 from courcelles.urban.dataimport.licences.mappers import WorklocationMapper
@@ -28,7 +30,7 @@ OBJECTS_NESTING = [
     (
         'LICENCE', [
             ('CONTACT', []),
-#            ('PARCEL', []),
+            ('PARCEL', []),
             ('DEPOSIT EVENT', []),
             ('COMPLETE FOLDER EVENT', []),
             ('DECISION EVENT', []),
@@ -147,33 +149,17 @@ FIELDS_MAPPINGS = {
         },
     },
 
-#   'PARCEL':
-#   {
-#       'factory': [ParcelFactory, {'portal_type': 'PortionOut'}],
+    'PARCEL':
+    {
+        'factory': [ParcelFactory, {'portal_type': 'PortionOut'}],
 
-#       'mappers': {
-#           'mappers': {
-#               SimpleMapper:  (
-#                   {
-#                       'from': 'SECTION',
-#                       'to': 'section',
-#                   },
-#               ),
-#               DivisionMapper: {
-#                   'from': 'lieu',
-#                   'to': 'division',
-#               },
-#               RadicalMapper: {
-#                   'from': 'RADICAL',
-#                   'to': ('radical', 'exposant', 'puissance'),
-#               },
-#               BisMapper: {
-#                   'from': 'BIS',
-#                   'to': 'bis',
-#               },
-#           },
-#       },
-#   },
+        'mappers': {
+            ParcelReferencesMapper: {
+                'from': ('lieu', 'section', 'numérocadastral'),
+                'to': (),
+            },
+        },
+    },
 
     'DEPOSIT EVENT':
     {

@@ -58,7 +58,8 @@ class WorklocationMapper(Mapper):
         if parsed_street:
             street, num = parsed_street.groups()
             street_keywords = cleanAndSplitWord(street + ' ' + locality)
-            brains = self.catalog(portal_type='Street', Title=street_keywords)
+            street_keywords = [word for word in street_keywords if len(word) > 1]
+            brains = self.catalog(portal_type='Street', Title=street_keywords, review_state='enabled')
             if len(brains) == 1:
                 return ({'street': brains[0].UID, 'number': num or ''},)
             if street:
@@ -134,7 +135,7 @@ class ArchitectMapper(PostCreationMapper):
         if not fullname:
             return []
         noisy_words = ['monsieur', 'madame', 'architecte', '&', ',', '.', 'or', 'mr', 'mme', '/']
-        name_keywords = [word.lower() for word in fullname if word.lower() not in noisy_words]
+        name_keywords = [word.lower() for word in fullname if word.lower() not in noisy_words and len(word) > 2]
         architects = self.catalog(portal_type='Architect', Title=name_keywords)
         if len(architects) == 1:
             return architects[0].getObject()
@@ -181,6 +182,8 @@ class ErrorsMapper(FinalMapper):
                     error_trace.append('<p>adresse : %s</p>' % data['address'])
                 elif 'architects' in error.message:
                     error_trace.append('<p>architecte : %s</p>' % data['raw_name'])
+                elif 'parse cadastral' in error.message:
+                    error_trace.append('<p>ref cadastrale : %s %s %s</p>' % (data['division'], data['section'], data['ref']))
                 elif 'parcelling' in error.message:
                     error_trace.append('<p>lotissement : %s %s, autorisé le %s</p>' % (data['approval date'], data['city'], data['auth_date']))
         error_trace = ''.join(error_trace)
@@ -257,6 +260,202 @@ class ContactSreetMapper(Mapper):
         if match:
             number = match.group(1)
         return number
+
+
+#
+# PARCEL
+#
+
+#factory
+
+
+class ParcelFactory(BaseFactory):
+    def create(self, factory_args, container=None, line=None):
+        searchview = self.site.restrictedTraverse('searchparcels')
+        argnames = ['division', 'section', 'radical', 'puissance', 'exposant']
+        args = {}
+
+        for name in argnames:
+            args[name] = factory_args.get(name, '')
+        #need to trick the search browser view about the args in its request
+        for k, v in args.iteritems():
+            searchview.context.REQUEST[k] = v
+        #check if we can find a parcel in the db cadastre with these infos
+        found = searchview.findParcel(**args)
+        if not found:
+            found = searchview.findParcel(browseoldparcels=True, **args)
+        if not found:
+            if args['division'] == '52015':
+                args['division'] = '52322'
+                searchview.context.REQUEST['division'] = '52322'
+                found = searchview.findParcel(**args)
+            if not found:
+                found = searchview.findParcel(browseoldparcels=True, **args)
+        if len(found) == 1:
+            args['divisionCode'] = args['division']
+        else:
+            self.logError(self, 'Too much parcels found or not enough parcels found', {'args': args, 'search result': len(found)})
+        args['id'] = ''.join([args[name] for name in argnames]).replace('/', '')
+        return super(ParcelFactory, self).create(args, container=container)
+
+
+# mappers
+
+
+class ParcelReferencesMapper(Mapper):
+    def map(self, line, **kwargs):
+
+        self.line = line
+        raw_references = self.getData('numérocadastral').upper()
+
+        reference_groups = self.splitReferenceGroups(raw_references)
+        tokenized_references = [self.tokenizeReference(ref) for ref in reference_groups]
+
+        base_ref = tokenized_references[0]
+        base_ref.reverse()
+
+        division = self.getDivision()
+        section = self.getData('section').strip()
+        if not section or not division:
+            return []
+        self.division_name = self.getData('lieu')
+
+        bis = self.getBis(base_ref)
+        if len(base_ref) > 3:
+            self.logError(
+                self,
+                line,
+                'Cannot parse cadastral reference',
+                {
+                    'division': self.getData('lieu'),
+                    'section': self.getData('section'),
+                    'ref': self.getData('numérocadastral')
+                }
+            )
+            return []
+
+        reference = {
+            'bis': bis,
+            'section': section,
+            'radical': self.getRadical(base_ref),
+            'exposant': self.getExposant(base_ref),
+            'puissance': self.getPuissance(base_ref),
+        }
+        reference.update(division)
+
+        references = [reference]
+
+        for tokenized_ref in tokenized_references[1:]:
+            ref = self.getSecondaryReference(tokenized_ref, reference)
+            if ref:
+                references.append(ref)
+
+        return references
+
+    def getSecondaryReference(self, secondary_ref, base_ref):
+        bis = self.getBis(secondary_ref)
+
+        ref_parts = ['radical', 'exposant', 'puissance']
+
+        to_fill = []
+        for part in ref_parts:
+            if base_ref[part]:
+                to_fill.append(part)
+            else:
+                break
+
+        if len(secondary_ref) > 3 or len(secondary_ref) > len(to_fill):
+            self.logError(
+                self,
+                self.line,
+                'Cannot parse cadastral secondary reference',
+                {
+                    'division': self.getData('lieu'),
+                    'section': self.getData('section'),
+                    'ref': self.getData('numérocadastral')
+                }
+            )
+            return
+
+        reference = base_ref.copy()
+        reference['bis'] = bis
+
+        secondary_ref.reverse()
+        for part in secondary_ref:
+            part_name = to_fill.pop()
+            old_part = reference[part_name]
+            if self.isSameType(old_part, part):
+                reference[part_name] = part
+            else:
+                self.logError(
+                    self,
+                    self.line,
+                    'Cannot parse cadastral secondary reference',
+                    {
+                        'division': self.getData('lieu'),
+                        'section': self.getData('section'),
+                        'ref': self.getData('numérocadastral')
+                    }
+                )
+                return
+
+        return reference
+
+    def isSameType(self, str1, str2):
+        return (str1.isdigit() and str2.isdigit()) or (str1.isalpha() and str2.isalpha())
+
+    def getPuissance(self, reference):
+        if reference:
+            return reference.pop()
+        return ''
+
+    def getExposant(self, reference):
+        if reference:
+            return reference.pop()
+        return ''
+
+    def getRadical(self, reference):
+        if reference:
+            return reference.pop()
+        return ''
+
+    def getBis(self, reference):
+        if '/' in reference:
+            bis_index = reference.index('/')
+            bis = reference[bis_index - 1]
+            del reference[bis_index - 1:bis_index + 1]
+            return bis
+        return ''
+
+    def getDivision(self):
+        raw_division = self.getData('lieu').lower()
+        try:
+            division = self.getValueMapping('division_map')[raw_division]
+        except:
+            self.logError(self, self.line, 'No division found')
+            return
+        result = {'division': division, 'divisioncode': division}
+        return result
+
+    def tokenizeReference(self, reference):
+        reference = ''.join(cleanAndSplitWord(reference)).upper()
+        # we do not use 'partie' in parcel search
+        regex = '\W*(?P<radical>\d+)?\s*(?P<bis>/\s*\d+)?\W*(?P<exposant>[a-zA-Z](?![a-zA-Z]))?\W*(?P<puissance>\d+)?\W*(?P<partie>pie)?\W*'
+        parsed_abbr = re.match(regex, reference).groups()
+        reference = [part for part in parsed_abbr if part]
+        return reference
+
+    def splitReferenceGroups(self, raw_references):
+        if '-' in raw_references:
+            return raw_references.split('-')
+        elif ',' in raw_references:
+            return raw_references.split(',')
+        elif '+' in raw_references:
+            return raw_references.split(',')
+        elif 'et' in raw_references:
+            return raw_references.split('et')
+        else:
+            return [raw_references]
 
 #
 # UrbanEvent deposit

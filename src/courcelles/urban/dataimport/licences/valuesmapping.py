@@ -49,4 +49,11 @@ VALUES_MAPS = {
 'Declaration'        : ['deliberation-college',                 '',                    'depot-de-la-demande'],
 }),
 
+'division_map': {
+    'courcelles': '52015',
+    'gouy-lez-piéton': '52031',
+    'souvret': '52064',
+    'trazegnies': '52066',
+},
+
 }
