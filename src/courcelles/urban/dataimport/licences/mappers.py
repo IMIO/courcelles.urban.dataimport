@@ -495,6 +495,30 @@ class DepositDateMapper(Mapper):
         return date
 
 #
+# UrbanEvent incomplete folder
+#
+
+#mappers
+
+
+class IncompleteFolderEventTypeMapper(Mapper):
+    def mapEventtype(self, line):
+        licence = self.importer.current_containers_stack[-1]
+        urban_tool = api.portal.get_tool('portal_urban')
+        eventtype_id = self.getValueMapping('eventtype_id_map')[licence.portal_type]['folder_incomplete']
+        config = urban_tool.getUrbanConfig(licence)
+        return getattr(config.urbaneventtypes, eventtype_id).UID()
+
+
+class IncompleteFolderDateMapper(Mapper):
+    def mapEventdate(self, line):
+        date = self.getData('datedossierincom')
+        date = date and DateTime(date) or None
+        if not date:
+            raise NoObjectToCreateException
+        return date
+
+#
 # UrbanEvent complete folder
 #
 

@@ -15,6 +15,8 @@ from courcelles.urban.dataimport.licences.mappers import DecisionMapper
 from courcelles.urban.dataimport.licences.mappers import DepositDateMapper
 from courcelles.urban.dataimport.licences.mappers import DepositEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import ErrorsMapper
+from courcelles.urban.dataimport.licences.mappers import IncompleteFolderDateMapper
+from courcelles.urban.dataimport.licences.mappers import IncompleteFolderEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import LicenceFactory
 from courcelles.urban.dataimport.licences.mappers import NotificationDateMapper
 from courcelles.urban.dataimport.licences.mappers import ObservationsMapper
@@ -32,6 +34,7 @@ OBJECTS_NESTING = [
             ('CONTACT', []),
             ('PARCEL', []),
             ('DEPOSIT EVENT', []),
+            ('INCOMPLETE FOLDER EVENT', []),
             ('COMPLETE FOLDER EVENT', []),
             ('DECISION EVENT', []),
         ],
@@ -175,6 +178,25 @@ FIELDS_MAPPINGS = {
                 'from': 'daterecepisse',
                 'to': 'eventDate',
             }
+        },
+    },
+
+    'INCOMPLETE FOLDER EVENT':
+    {
+        'factory': [UrbanEventFactory],
+
+        'allowed_containers': ['BuildLicence', 'ParcelOutLicence'],
+
+        'mappers': {
+            IncompleteFolderEventTypeMapper: {
+                'from': (),
+                'to': 'eventtype',
+            },
+
+            IncompleteFolderDateMapper: {
+                'from': 'datedossierincom',
+                'to': 'eventDate',
+            },
         },
     },
 
