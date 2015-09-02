@@ -12,6 +12,7 @@ from courcelles.urban.dataimport.licences.mappers import ContactTitleMapper
 from courcelles.urban.dataimport.licences.mappers import DecisionDateMapper
 from courcelles.urban.dataimport.licences.mappers import DecisionEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import DecisionMapper
+from courcelles.urban.dataimport.licences.mappers import DelayMapper
 from courcelles.urban.dataimport.licences.mappers import DepositDateMapper
 from courcelles.urban.dataimport.licences.mappers import DepositEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import ErrorsMapper
@@ -84,6 +85,11 @@ FIELDS_MAPPINGS = {
             WorklocationMapper: {
                 'from': ('lieu', 'ruelieu'),
                 'to': 'workLocations',
+            },
+
+            DelayMapper: {
+                'from': 'délai',
+                'to': 'annoncedDelay',
             },
 
 #            PcaMapper: {

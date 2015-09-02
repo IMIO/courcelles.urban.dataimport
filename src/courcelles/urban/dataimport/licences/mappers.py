@@ -75,6 +75,12 @@ class WorklocationMapper(Mapper):
         return ({},)
 
 
+class DelayMapper(Mapper):
+    def mapAnnonceddelay(self, line):
+        delay = self.getData('délai')
+        return delay + 'j'
+
+
 class PcaMapper(Mapper):
     def mapIsinpca(self, line):
         return bool(self.getData('DatePPA'))
