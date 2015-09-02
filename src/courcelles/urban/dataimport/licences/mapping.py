@@ -17,6 +17,8 @@ from courcelles.urban.dataimport.licences.mappers import DepositEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import ErrorsMapper
 from courcelles.urban.dataimport.licences.mappers import IncompleteFolderDateMapper
 from courcelles.urban.dataimport.licences.mappers import IncompleteFolderEventTypeMapper
+from courcelles.urban.dataimport.licences.mappers import InquiryEndMapper
+from courcelles.urban.dataimport.licences.mappers import InquiryStartMapper
 from courcelles.urban.dataimport.licences.mappers import LicenceFactory
 from courcelles.urban.dataimport.licences.mappers import NotificationDateMapper
 from courcelles.urban.dataimport.licences.mappers import ObservationsMapper
@@ -25,6 +27,10 @@ from courcelles.urban.dataimport.licences.mappers import ParcelReferencesMapper
 from courcelles.urban.dataimport.licences.mappers import PortalTypeMapper
 from courcelles.urban.dataimport.licences.mappers import PrimoDateMapper
 from courcelles.urban.dataimport.licences.mappers import PrimoEventTypeMapper
+from courcelles.urban.dataimport.licences.mappers import SecondRWDecisionDateMapper
+from courcelles.urban.dataimport.licences.mappers import SecondRWDecisionMapper
+from courcelles.urban.dataimport.licences.mappers import SecondRWEventDateMapper
+from courcelles.urban.dataimport.licences.mappers import SecondRWEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import UrbanEventFactory
 from courcelles.urban.dataimport.licences.mappers import WorklocationMapper
 
@@ -39,6 +45,7 @@ OBJECTS_NESTING = [
             ('INCOMPLETE FOLDER EVENT', []),
             ('COMPLETE FOLDER EVENT', []),
             ('PRIMO RW EVENT', []),
+            ('SECOND RW EVENT', []),
             ('DECISION EVENT', []),
         ],
     ),
@@ -103,6 +110,16 @@ FIELDS_MAPPINGS = {
                 'allowed_containers': ['BuildLicence'],
                 'from': 'architecte',
                 'to': 'architects',
+            },
+
+            InquiryStartMapper: {
+                'from': 'débutenquete',
+                'to': 'investigationStart',
+            },
+
+            InquiryEndMapper: {
+                'from': 'finenquete',
+                'to': 'investigationEnd',
             },
 
             CompletionStateMapper: {
@@ -237,6 +254,35 @@ FIELDS_MAPPINGS = {
             PrimoDateMapper: {
                 'from': 'dateenvoiprédossier',
                 'to': 'eventDate',
+            },
+        },
+    },
+
+    'SECOND RW EVENT':
+    {
+        'factory': [UrbanEventFactory],
+
+        'allowed_containers': ['BuildLicence', 'ParcelOutLicence'],
+
+        'mappers': {
+            SecondRWEventTypeMapper: {
+                'from': (),
+                'to': 'eventtype',
+            },
+
+            SecondRWEventDateMapper: {
+                'from': 'dateavisfoncdelegue',
+                'to': 'eventDate',
+            },
+
+            SecondRWDecisionMapper: {
+                'from': 'typeavis',
+                'to': 'externalDecision',
+            },
+
+            SecondRWDecisionDateMapper: {
+                'from': 'dateavisfoncdelegue',
+                'to': 'decisionDate',
             },
         },
     },

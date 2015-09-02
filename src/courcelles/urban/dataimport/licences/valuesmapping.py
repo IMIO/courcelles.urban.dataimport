@@ -56,4 +56,12 @@ VALUES_MAPS = {
     'trazegnies': '52066',
 },
 
+'externaldecisions_map': {
+    'favorable': 'favorable',
+    'favorable conditionel': 'favorable-conditionnel',
+    'défavorable': 'defavorable',
+    'défavorable révisable': 'defavorable-revisable',
+    'favorable par défaut': 'favorable-defaut',
+},
+
 }

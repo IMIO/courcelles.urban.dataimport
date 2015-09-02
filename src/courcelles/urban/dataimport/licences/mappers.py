@@ -148,6 +148,20 @@ class ArchitectMapper(PostCreationMapper):
         return []
 
 
+class InquiryStartMapper(PostCreationMapper):
+    def mapInvestigationstart(self, line, plone_object):
+        date = self.getData('débutenquete')
+        date = date and DateTime(date) or None
+        return date
+
+
+class InquiryEndMapper(PostCreationMapper):
+    def mapInvestigationend(self, line, plone_object):
+        date = self.getData('finenquete')
+        date = date and DateTime(date) or None
+        return date
+
+
 class CompletionStateMapper(PostCreationMapper):
     def map(self, line, plone_object):
         self.line = line
@@ -564,6 +578,42 @@ class PrimoDateMapper(Mapper):
         date = date and DateTime(date) or None
         if not date:
             raise NoObjectToCreateException
+        return date
+
+#
+# UrbanEvent second RW
+#
+
+#mappers
+
+
+class SecondRWEventTypeMapper(Mapper):
+    def mapEventtype(self, line):
+        licence = self.importer.current_containers_stack[-1]
+        urban_tool = api.portal.get_tool('portal_urban')
+        eventtype_id = 'transmis-2eme-dossier-rw'
+        config = urban_tool.getUrbanConfig(licence)
+        return getattr(config.urbaneventtypes, eventtype_id).UID()
+
+
+class SecondRWEventDateMapper(Mapper):
+    def mapEventdate(self, line):
+        date = self.getData('dateavisfoncdelegue')
+        date = date and DateTime(date) or None
+        return date
+
+
+class SecondRWDecisionMapper(Mapper):
+    def mapExternaldecision(self, line):
+        raw_decision = self.getData('typeavis')
+        decision = self.getValueMapping('externaldecisions_map').get(raw_decision, [])
+        return decision
+
+
+class SecondRWDecisionDateMapper(Mapper):
+    def mapDecisiondate(self, line):
+        date = self.getData('dateavisfoncdelegue')
+        date = date and DateTime(date) or None
         return date
 
 #
