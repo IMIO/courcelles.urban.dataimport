@@ -317,7 +317,8 @@ class ParcelFactory(BaseFactory):
             args['divisionCode'] = args['division']
         else:
             self.logError(self, 'Too much parcels found or not enough parcels found', {'args': args, 'search result': len(found)})
-        args['id'] = ''.join([args[name] for name in argnames]).replace('/', '')
+        parcel_id = ''.join([args[name] for name in argnames]).replace('/', '')
+        args['id'] = self.site.portal_urban.generateUniqueId(parcel_id)
         return super(ParcelFactory, self).create(args, container=container)
 
 
