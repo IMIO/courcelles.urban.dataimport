@@ -33,6 +33,10 @@ from courcelles.urban.dataimport.licences.mappers import SecondRWDecisionMapper
 from courcelles.urban.dataimport.licences.mappers import SecondRWEventDateMapper
 from courcelles.urban.dataimport.licences.mappers import SecondRWEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import UrbanEventFactory
+from courcelles.urban.dataimport.licences.mappers import WorksStartEventDateMapper
+from courcelles.urban.dataimport.licences.mappers import WorksStartEventTypeMapper
+from courcelles.urban.dataimport.licences.mappers import WorksEndEventDateMapper
+from courcelles.urban.dataimport.licences.mappers import WorksEndEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import WorklocationMapper
 
 from imio.urban.dataimport.access.mapper import AccessSimpleMapper as SimpleMapper
@@ -48,6 +52,8 @@ OBJECTS_NESTING = [
             ('PRIMO RW EVENT', []),
             ('SECOND RW EVENT', []),
             ('DECISION EVENT', []),
+            ('WORKS START EVENT', []),
+            ('WORKS END EVENT', []),
         ],
     ),
 ]
@@ -316,6 +322,44 @@ FIELDS_MAPPINGS = {
             DecisionMapper: {
                 'from': ('datepermis', 'daterefus'),
                 'to': 'decision',
+            },
+        },
+    },
+
+    'WORKS START EVENT':
+    {
+        'factory': [UrbanEventFactory],
+
+        'allowed_containers': ['BuildLicence'],
+
+        'mappers': {
+            WorksStartEventTypeMapper: {
+                'from': (),
+                'to': 'eventtype',
+            },
+
+            WorksStartEventDateMapper: {
+                'from': 'débuttravaux',
+                'to': 'eventDate',
+            },
+        },
+    },
+
+    'WORKS END EVENT':
+    {
+        'factory': [UrbanEventFactory],
+
+        'allowed_containers': ['BuildLicence'],
+
+        'mappers': {
+            WorksEndEventTypeMapper: {
+                'from': (),
+                'to': 'eventtype',
+            },
+
+            WorksEndEventDateMapper: {
+                'from': 'fintravaux',
+                'to': 'eventDate',
             },
         },
     },

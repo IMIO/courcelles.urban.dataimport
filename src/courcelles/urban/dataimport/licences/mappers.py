@@ -78,7 +78,9 @@ class WorklocationMapper(Mapper):
 class DelayMapper(Mapper):
     def mapAnnonceddelay(self, line):
         delay = self.getData('délai')
-        return delay + 'j'
+        if delay in ['30', '70', '75', '90', '115', '230']:
+            return delay + 'j'
+        return []
 
 
 class PcaMapper(Mapper):
@@ -663,3 +665,51 @@ class DecisionMapper(Mapper):
         elif self.getData('daterefus'):
             return 'defavorable'
         raise NoObjectToCreateException
+
+#
+# UrbanEvent works start
+#
+
+#mappers
+
+
+class WorksStartEventTypeMapper(Mapper):
+    def mapEventtype(self, line):
+        licence = self.importer.current_containers_stack[-1]
+        urban_tool = api.portal.get_tool('portal_urban')
+        eventtype_id = 'debut-des-travaux'
+        config = urban_tool.getUrbanConfig(licence)
+        return getattr(config.urbaneventtypes, eventtype_id).UID()
+
+
+class WorksStartEventDateMapper(Mapper):
+    def mapEventdate(self, line):
+        date = self.getData('débuttravaux')
+        date = date and DateTime(date) or None
+        if not date:
+            raise NoObjectToCreateException
+        return date
+
+#
+# UrbanEvent works end
+#
+
+#mappers
+
+
+class WorksEndEventTypeMapper(Mapper):
+    def mapEventtype(self, line):
+        licence = self.importer.current_containers_stack[-1]
+        urban_tool = api.portal.get_tool('portal_urban')
+        eventtype_id = 'fin-des-travaux'
+        config = urban_tool.getUrbanConfig(licence)
+        return getattr(config.urbaneventtypes, eventtype_id).UID()
+
+
+class WorksEndEventDateMapper(Mapper):
+    def mapEventdate(self, line):
+        date = self.getData('fintravaux')
+        date = date and DateTime(date) or None
+        if not date:
+            raise NoObjectToCreateException
+        return date
