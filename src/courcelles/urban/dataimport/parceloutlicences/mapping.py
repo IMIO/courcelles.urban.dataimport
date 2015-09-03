@@ -64,7 +64,7 @@ FIELDS_MAPPINGS = {
                     'to': 'id',
                 },
                 {
-                    'from': 'N°',
+                    'from': 'numéropermis',
                     'to': 'reference',
                 },
                 {
