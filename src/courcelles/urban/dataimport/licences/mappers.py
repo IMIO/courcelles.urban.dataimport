@@ -209,7 +209,11 @@ class ErrorsMapper(FinalMapper):
                 elif 'parcelling' in error.message:
                     error_trace.append('<p>lotissement : %s %s, autorisé le %s</p>' % (data['approval date'], data['city'], data['auth_date']))
         error_trace = ''.join(error_trace)
-
+        if type(error_trace) == type(u''):
+            error_trace = error_trace.encode('utf-8')
+        if type(description) == type(u''):
+            description = description.encode('utf-8')
+	
         return '%s%s' % (error_trace, description)
 
 #
