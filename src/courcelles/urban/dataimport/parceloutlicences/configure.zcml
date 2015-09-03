@@ -1,0 +1,27 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    i18n_domain="courcelles.urban.dataimport">
+
+    <adapter
+        for="courcelles.urban.dataimport.parceloutlicences.importer.ParceloutLicencesImporter"
+        factory=".importer.ParceloutLicencesMapping"
+        provides="imio.urban.dataimport.interfaces.IObjectsMapping"
+        name="objects mapping"
+        />
+
+    <adapter
+        for="courcelles.urban.dataimport.parceloutlicences.importer.ParceloutLicencesImporter"
+        factory=".importer.ParceloutLicencesValuesMapping"
+        provides="imio.urban.dataimport.interfaces.IValuesMapping"
+        name="values mapping"
+        />
+
+    <adapter
+        for="imio.urban.dataimport.interfaces.IImportSettingsForm"
+        factory=".settings.ParceloutLicencesImporterFromImportSettings"
+        provides="imio.urban.dataimport.csv.interfaces.ICSVImporter"
+        name="Courcelles parceloutlicences"
+        />
+
+</configure>

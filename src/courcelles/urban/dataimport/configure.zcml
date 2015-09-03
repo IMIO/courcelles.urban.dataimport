@@ -18,6 +18,7 @@
     <include package=".notaries" />
     <include package=".parcellings" />
     <include package=".licences" />
+    <include package=".parceloutlicences" />
 
     <!-- Register the installation GenericSetup extension profile -->
     <genericsetup:registerProfile
