@@ -16,6 +16,7 @@ from courcelles.urban.dataimport.licences.mappers import DelayMapper
 from courcelles.urban.dataimport.licences.mappers import DepositDateMapper
 from courcelles.urban.dataimport.licences.mappers import DepositEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import ErrorsMapper
+from courcelles.urban.dataimport.licences.mappers import FoldermanagerMapper
 from courcelles.urban.dataimport.licences.mappers import IncompleteFolderDateMapper
 from courcelles.urban.dataimport.licences.mappers import IncompleteFolderEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import InquiryEndMapper
@@ -86,6 +87,11 @@ FIELDS_MAPPINGS = {
             PortalTypeMapper: {
                 'from': 'type',
                 'to': ('portal_type', 'folderCategory',)
+            },
+
+            FoldermanagerMapper: {
+                'from': 'agent traitant',
+                'to': 'foldermanagers',
             },
 
             WorklocationMapper: {

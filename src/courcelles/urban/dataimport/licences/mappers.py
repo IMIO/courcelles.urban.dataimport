@@ -49,6 +49,15 @@ class PortalTypeMapper(Mapper):
         return foldercategory
 
 
+class FoldermanagerMapper(Mapper):
+    def mapFoldermanagers(self, line):
+        foldermanager_name = self.getData('agent traitant')
+        catalog = api.portal.get_tool('portal_catalog')
+        brains = catalog(portal_type='FolderManager', Title=foldermanager_name)
+        foldermanager_uids = [brain.UID for brain in brains]
+        return foldermanager_uids
+
+
 class WorklocationMapper(Mapper):
     def mapWorklocations(self, line):
         locality = self.getData('lieu')
