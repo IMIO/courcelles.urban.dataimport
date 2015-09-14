@@ -50,7 +50,7 @@ class FolderCategoryMapper(Mapper):
         if foldercategory == 'upp':
             pca = self.getData('zonepca')
             lot = self.getData('datelot') or self.getData('reflot')
-            college = self.getData('dateinformation')
+            college = self.getData('dateaviscol')
 
             if pca or lot:
                 foldercategory = 'udc'
@@ -178,18 +178,55 @@ class ArchitectMapper(PostCreationMapper):
         return []
 
 
-class InquiryStartMapper(PostCreationMapper):
-    def mapInvestigationstart(self, line, plone_object):
+class InquiryStartMapper(Mapper):
+    def mapInvestigationstart(self, line):
         date = self.getData('débutenquete')
         date = date and DateTime(date) or None
         return date
 
 
-class InquiryEndMapper(PostCreationMapper):
-    def mapInvestigationend(self, line, plone_object):
+class InquiryEndMapper(Mapper):
+    def mapInvestigationend(self, line):
         date = self.getData('finenquete')
         date = date and DateTime(date) or None
         return date
+
+
+class ReclamationsMapper(Mapper):
+    def mapInvestigationwritereclamationnumber(self, line):
+        raw_number = self.getData('nombreréclamation')
+        number = sum([int(i) for i in re.findall('\d+', raw_number)])
+        return number
+
+
+class OpinionsMapper(Mapper):
+    def mapSolicitopinionsto(self, line):
+        opinions = []
+        if int(self.getData('transSNCB')):
+            opinions.append('sncb')
+        if int(self.getData('transNATUREFORET')):
+            opinions.append('dnf')
+        if int(self.getData('transMONUMENTSITES')):
+            opinions.append('crmsf')
+        # if int(self.getData('transMET')):
+        #    opinions.append('')
+        if int(self.getData('transSERVICEVOYER')):
+            opinions.append('svp')
+        # if int(self.getData('transCHACUNLOGIS')):
+        #    opinions.append('')
+        # if int(self.getData('transIGRETEC')):
+        #    opinions.append('')
+        # if int(self.getData('transELECTRABEL')):
+        #    opinions.append('')
+        # if int(self.getData('transRAVel')):
+        #    opinions.append('')
+        if int(self.getData('transCCAT')):
+            opinions.append('ccatm')
+        # if int(self.getData('transSRI')):
+        #    opinions.append('')
+        if int(self.getData('transAGRICULTURE')):
+            opinions.append('agriculture')
+        return opinions
 
 
 class CompletionStateMapper(PostCreationMapper):

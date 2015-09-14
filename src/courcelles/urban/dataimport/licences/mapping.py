@@ -27,9 +27,11 @@ from courcelles.urban.dataimport.licences.mappers import InquiryStartMapper
 from courcelles.urban.dataimport.licences.mappers import LicenceFactory
 from courcelles.urban.dataimport.licences.mappers import NotificationDateMapper
 from courcelles.urban.dataimport.licences.mappers import ObservationsMapper
+from courcelles.urban.dataimport.licences.mappers import OpinionsMapper
 from courcelles.urban.dataimport.licences.mappers import ParcelFactory
 from courcelles.urban.dataimport.licences.mappers import ParcelReferencesMapper
 from courcelles.urban.dataimport.licences.mappers import PortalTypeMapper
+from courcelles.urban.dataimport.licences.mappers import ReclamationsMapper
 from courcelles.urban.dataimport.licences.mappers import PrimoDateMapper
 from courcelles.urban.dataimport.licences.mappers import PrimoEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import RemovalDateMapper
@@ -150,6 +152,29 @@ FIELDS_MAPPINGS = {
             InquiryEndMapper: {
                 'from': 'finenquete',
                 'to': 'investigationEnd',
+            },
+
+            ReclamationsMapper: {
+                'from': 'nombreréclamation',
+                'to': 'investigationWriteReclamationNumber',
+            },
+
+            OpinionsMapper: {
+                'from': (
+                    'transAGRICULTURE',
+                    'transSRI',
+                    'transCCAT',
+                    'transRAVel',
+                    'transELECTRABEL',
+                    'transIGRETEC',
+                    'transCHACUNLOGIS',
+                    'transSERVICEVOYER',
+                    'transMET',
+                    'transMONUMENTSITES',
+                    'transNATUREFORET',
+                    'transSNCB'
+                ),
+                'to': 'solicitOpinionsTo',
             },
 
             CompletionStateMapper: {
@@ -366,6 +391,8 @@ FIELDS_MAPPINGS = {
     'REMOVAL EVENT':
     {
         'factory': [UrbanEventFactory],
+
+        'allowed_containers': ['BuildLicence', 'ParcelOutLicence'],
 
         'mappers': {
             RemovalEventTypeMapper: {
