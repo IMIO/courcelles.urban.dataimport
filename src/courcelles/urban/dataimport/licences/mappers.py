@@ -41,9 +41,22 @@ class PortalTypeMapper(Mapper):
             raise NoObjectToCreateException
         return portal_type
 
+
+class FolderCategoryMapper(Mapper):
     def mapFoldercategory(self, line):
         type_value = self.getData('type')
         foldercategory = self.getValueMapping('type_map')[type_value]['foldercategory']
+
+        if foldercategory == 'upp':
+            pca = self.getData('zonepca')
+            lot = self.getData('datelot') or self.getData('reflot')
+            college = self.getData('dateinformation')
+
+            if pca or lot:
+                foldercategory = 'udc'
+            elif college:
+                foldercategory = 'uap'
+
         if not foldercategory:
             raise NoObjectToCreateException
         return foldercategory

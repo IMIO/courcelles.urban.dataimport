@@ -6,9 +6,9 @@ VALUES_MAPS = {
 
 'type_map': table({
 'header'      : ['portal_type',  'foldercategory'],
-''            : ['BuildLicence', 'uap'],
-'PerOrd'      : ['BuildLicence', 'uap'],
-'CU2'         : ['BuildLicence', 'uap'],
+''            : ['BuildLicence', 'upp'],
+'PerOrd'      : ['BuildLicence', 'upp'],
+'CU2'         : ['BuildLicence', 'upp'],
 'aut com'     : ['BuildLicence', 'upp'],
 'Aut com'     : ['BuildLicence', 'upp'],
 'art 127'     : ['BuildLicence', 'art127'],
