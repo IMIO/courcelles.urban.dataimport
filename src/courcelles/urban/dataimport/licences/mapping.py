@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from courcelles.urban.dataimport.licences.mappers import ArchitectMapper
+from courcelles.urban.dataimport.licences.mappers import CollegeReportDateMapper
+from courcelles.urban.dataimport.licences.mappers import CollegeReportEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import CompleteFolderDateMapper
 from courcelles.urban.dataimport.licences.mappers import CompleteFolderEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import CompletionStateMapper
@@ -30,6 +32,8 @@ from courcelles.urban.dataimport.licences.mappers import ParcelReferencesMapper
 from courcelles.urban.dataimport.licences.mappers import PortalTypeMapper
 from courcelles.urban.dataimport.licences.mappers import PrimoDateMapper
 from courcelles.urban.dataimport.licences.mappers import PrimoEventTypeMapper
+from courcelles.urban.dataimport.licences.mappers import RemovalDateMapper
+from courcelles.urban.dataimport.licences.mappers import RemovalEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import SecondRWDecisionDateMapper
 from courcelles.urban.dataimport.licences.mappers import SecondRWDecisionMapper
 from courcelles.urban.dataimport.licences.mappers import SecondRWEventDateMapper
@@ -52,8 +56,10 @@ OBJECTS_NESTING = [
             ('INCOMPLETE FOLDER EVENT', []),
             ('COMPLETE FOLDER EVENT', []),
             ('PRIMO RW EVENT', []),
+            ('COLLEGE REPORT EVENT', []),
             ('SECOND RW EVENT', []),
             ('DECISION EVENT', []),
+            ('REMOVAL EVENT', []),
             ('WORKS START EVENT', []),
             ('WORKS END EVENT', []),
         ],
@@ -91,7 +97,7 @@ FIELDS_MAPPINGS = {
             },
 
             FolderCategoryMapper: {
-                'from': ('type', 'zonepca', 'datelot', 'reflot', 'dateinformation'),
+                'from': ('type', 'zonepca', 'datelot', 'reflot', 'dateaviscol'),
                 'to': 'folderCategory',
             },
 
@@ -282,6 +288,25 @@ FIELDS_MAPPINGS = {
         },
     },
 
+    'COLLEGE REPORT EVENT':
+    {
+        'factory': [UrbanEventFactory],
+
+        'allowed_containers': ['BuildLicence', 'ParcelOutLicence'],
+
+        'mappers': {
+            CollegeReportEventTypeMapper: {
+                'from': (),
+                'to': 'eventtype',
+            },
+
+            CollegeReportDateMapper: {
+                'from': 'dateaviscol',
+                'to': 'eventDate',
+            },
+        },
+    },
+
     'SECOND RW EVENT':
     {
         'factory': [UrbanEventFactory],
@@ -295,7 +320,7 @@ FIELDS_MAPPINGS = {
             },
 
             SecondRWEventDateMapper: {
-                'from': 'dateavisfoncdelegue',
+                'from': 'dateenvoiaviscol',
                 'to': 'eventDate',
             },
 
@@ -334,6 +359,23 @@ FIELDS_MAPPINGS = {
             DecisionMapper: {
                 'from': ('datepermis', 'daterefus'),
                 'to': 'decision',
+            },
+        },
+    },
+
+    'REMOVAL EVENT':
+    {
+        'factory': [UrbanEventFactory],
+
+        'mappers': {
+            RemovalEventTypeMapper: {
+                'from': (),
+                'to': 'eventtype',
+            },
+
+            RemovalDateMapper: {
+                'from': ('datepermis', 'daterefus'),
+                'to': 'eventDate',
             },
         },
     },

@@ -198,6 +198,8 @@ class CompletionStateMapper(PostCreationMapper):
         state = ''
         if self.getData('datepermis'):
             state = 'accepted'
+            if self.getData('daterefus'):
+                state = 'retired'
         elif self.getData('daterefus'):
             state = 'refused'
         else:
@@ -617,6 +619,30 @@ class PrimoDateMapper(Mapper):
         return date
 
 #
+# UrbanEvent College Report
+#
+
+#mappers
+
+
+class CollegeReportEventTypeMapper(Mapper):
+    def mapEventtype(self, line):
+        licence = self.importer.current_containers_stack[-1]
+        urban_tool = api.portal.get_tool('portal_urban')
+        eventtype_id = 'rapport-du-college'
+        config = urban_tool.getUrbanConfig(licence)
+        return getattr(config.urbaneventtypes, eventtype_id).UID()
+
+
+class CollegeReportDateMapper(Mapper):
+    def mapEventdate(self, line):
+        date = self.getData('dateaviscol')
+        date = date and DateTime(date) or None
+        if not date:
+            raise NoObjectToCreateException
+        return date
+
+#
 # UrbanEvent second RW
 #
 
@@ -634,7 +660,7 @@ class SecondRWEventTypeMapper(Mapper):
 
 class SecondRWEventDateMapper(Mapper):
     def mapEventdate(self, line):
-        date = self.getData('dateavisfoncdelegue')
+        date = self.getData('dateenvoiaviscol')
         date = date and DateTime(date) or None
         return date
 
@@ -693,6 +719,31 @@ class DecisionMapper(Mapper):
         elif self.getData('daterefus'):
             return 'defavorable'
         raise NoObjectToCreateException
+
+#
+# UrbanEvent removal
+#
+
+#mappers
+
+
+class RemovalEventTypeMapper(Mapper):
+    def mapEventtype(self, line):
+        licence = self.importer.current_containers_stack[-1]
+        urban_tool = api.portal.get_tool('portal_urban')
+        eventtype_id = self.getValueMapping('eventtype_id_map')[licence.portal_type]['removal_event']
+        config = urban_tool.getUrbanConfig(licence)
+        return getattr(config.urbaneventtypes, eventtype_id).UID()
+
+
+class RemovalDateMapper(Mapper):
+    def mapEventdate(self, line):
+        date = self.getData('daterefus')
+        removal_date = date and DateTime(date) or None
+        accepted_date = self.getData('datepermis')
+        if not removal_date or not accepted_date:
+            raise NoObjectToCreateException
+        return date
 
 #
 # UrbanEvent works start
