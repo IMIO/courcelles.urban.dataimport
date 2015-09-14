@@ -213,7 +213,7 @@ class ErrorsMapper(FinalMapper):
             error_trace = error_trace.encode('utf-8')
         if type(description) == type(u''):
             description = description.encode('utf-8')
-	
+
         return '%s%s' % (error_trace, description)
 
 #
@@ -244,6 +244,7 @@ class ContactIdMapper(Mapper):
 class ContactTitleMapper(Mapper):
     def mapPersontitle(self, line):
         titre = self.getData('Titre') or ''
+        titre = titre.lower()
         titre_mapping = self.getValueMapping('titre_map')
         if titre in titre_mapping.keys():
             return titre_mapping[titre]
