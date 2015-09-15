@@ -13,6 +13,7 @@ from courcelles.urban.dataimport.licences.mappers import ContactSreetMapper
 from courcelles.urban.dataimport.licences.mappers import ContactTitleMapper
 from courcelles.urban.dataimport.licences.mappers import DecisionDateMapper
 from courcelles.urban.dataimport.licences.mappers import DecisionEventTypeMapper
+from courcelles.urban.dataimport.licences.mappers import DeclarationDecisionEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import DecisionMapper
 from courcelles.urban.dataimport.licences.mappers import DelayMapper
 from courcelles.urban.dataimport.licences.mappers import DepositDateMapper
@@ -26,6 +27,7 @@ from courcelles.urban.dataimport.licences.mappers import InquiryEndMapper
 from courcelles.urban.dataimport.licences.mappers import InquiryStartMapper
 from courcelles.urban.dataimport.licences.mappers import LicenceFactory
 from courcelles.urban.dataimport.licences.mappers import NotificationDateMapper
+from courcelles.urban.dataimport.licences.mappers import NotificationEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import ObservationsMapper
 from courcelles.urban.dataimport.licences.mappers import OpinionsMapper
 from courcelles.urban.dataimport.licences.mappers import ParcelFactory
@@ -61,6 +63,8 @@ OBJECTS_NESTING = [
             ('COLLEGE REPORT EVENT', []),
             ('SECOND RW EVENT', []),
             ('DECISION EVENT', []),
+            ('DECLARATION DECISION EVENT', []),
+            ('NOTIFICATION EVENT', []),
             ('REMOVAL EVENT', []),
             ('WORKS START EVENT', []),
             ('WORKS END EVENT', []),
@@ -260,8 +264,6 @@ FIELDS_MAPPINGS = {
     {
         'factory': [UrbanEventFactory],
 
-        'allowed_containers': ['BuildLicence', 'ParcelOutLicence'],
-
         'mappers': {
             IncompleteFolderEventTypeMapper: {
                 'from': (),
@@ -365,6 +367,8 @@ FIELDS_MAPPINGS = {
     {
         'factory': [UrbanEventFactory],
 
+        'allowed_containers': ['BuildLicence', 'ParcelOutLicence'],
+
         'mappers': {
             DecisionEventTypeMapper: {
                 'from': (),
@@ -384,6 +388,49 @@ FIELDS_MAPPINGS = {
             DecisionMapper: {
                 'from': ('datepermis', 'daterefus'),
                 'to': 'decision',
+            },
+        },
+    },
+
+    'DECLARATION DECISION EVENT':
+    {
+        'factory': [UrbanEventFactory],
+
+        'allowed_containers': ['Declaration'],
+
+        'mappers': {
+            DeclarationDecisionEventTypeMapper: {
+                'from': (),
+                'to': 'eventtype',
+            },
+
+            DecisionDateMapper: {
+                'from': ('datepermis', 'daterefus'),
+                'to': 'eventDate',
+            },
+
+            DecisionMapper: {
+                'from': ('datepermis', 'daterefus'),
+                'to': 'decision',
+            },
+        },
+    },
+
+    'NOTIFICATION EVENT':
+    {
+        'factory': [UrbanEventFactory],
+
+        'allowed_containers': ['Declaration'],
+
+        'mappers': {
+            NotificationEventTypeMapper: {
+                'from': (),
+                'to': 'eventtype',
+            },
+
+            NotificationDateMapper: {
+                'from': 'dateenvoipermis',
+                'to': 'eventDate',
             },
         },
     },

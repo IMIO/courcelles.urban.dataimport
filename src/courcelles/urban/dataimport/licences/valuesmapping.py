@@ -42,13 +42,6 @@ VALUES_MAPS = {
     'm. et mme.': 'madam_and_mister',
 },
 
-'eventtype_id_map': table({
-'header'             : ['decision_event',                       'folder_incomplete', 'folder_complete',     'deposit_event'      , 'removal_event'],
-'BuildLicence'       : ['delivrance-du-permis-octroi-ou-refus', 'dossier-incomplet', 'accuse-de-reception', 'depot-de-la-demande', 'retrait-du-permis'],
-'ParcelOutLicence'   : ['delivrance-du-permis-octroi-ou-refus', 'dossier-incomplet', 'accuse-de-reception', 'depot-de-la-demande', 'retrait-du-permis'],
-'Declaration'        : ['deliberation-college',                 '',                  '',                    'depot-de-la-demande', ''],
-}),
-
 'division_map': {
     'courcelles': '52015',
     'gouy-lez-piéton': '52031',
