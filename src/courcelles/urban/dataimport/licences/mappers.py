@@ -105,6 +105,24 @@ class DelayMapper(Mapper):
         return []
 
 
+class FolderZoneMapper(Mapper):
+    def mapFolderzone(self, line):
+        raw_folderzone = self.getData('zoneplansecteur').lower()
+        if 'rural' in raw_folderzone:
+            return ['zhcr']
+        elif 'habitat' in raw_folderzone:
+            return ['zh']
+        return []
+
+    def mapFolderzonedetails(self, line):
+        folderzone = self.getData('zoneplansecteur')
+        if 'rural' in folderzone.lower():
+            return ''
+        elif 'habitat' in folderzone.lower():
+            return ''
+        return folderzone
+
+
 class PcaMapper(Mapper):
     def mapIsinpca(self, line):
         return bool(self.getData('DatePPA'))

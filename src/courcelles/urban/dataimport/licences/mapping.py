@@ -20,6 +20,7 @@ from courcelles.urban.dataimport.licences.mappers import DepositDateMapper
 from courcelles.urban.dataimport.licences.mappers import DepositEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import ErrorsMapper
 from courcelles.urban.dataimport.licences.mappers import FolderCategoryMapper
+from courcelles.urban.dataimport.licences.mappers import FolderZoneMapper
 from courcelles.urban.dataimport.licences.mappers import FoldermanagerMapper
 from courcelles.urban.dataimport.licences.mappers import IncompleteFolderDateMapper
 from courcelles.urban.dataimport.licences.mappers import IncompleteFolderEventTypeMapper
@@ -120,6 +121,11 @@ FIELDS_MAPPINGS = {
             DelayMapper: {
                 'from': 'délai',
                 'to': 'annoncedDelay',
+            },
+
+            FolderZoneMapper: {
+                'from': 'zoneplansecteur',
+                'to': ('folderZone', 'folderZoneDetails')
             },
 
 #            PcaMapper: {
