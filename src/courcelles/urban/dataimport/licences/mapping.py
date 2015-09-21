@@ -33,6 +33,7 @@ from courcelles.urban.dataimport.licences.mappers import NotificationEventTypeMa
 from courcelles.urban.dataimport.licences.mappers import ObservationsMapper
 from courcelles.urban.dataimport.licences.mappers import OpinionsMapper
 from courcelles.urban.dataimport.licences.mappers import ParcelFactory
+from courcelles.urban.dataimport.licences.mappers import ParcellingsMapper
 from courcelles.urban.dataimport.licences.mappers import ParcelReferencesMapper
 from courcelles.urban.dataimport.licences.mappers import PcaMapper
 from courcelles.urban.dataimport.licences.mappers import PortalTypeMapper
@@ -135,15 +136,10 @@ FIELDS_MAPPINGS = {
                 'to': ('isInPCA', 'pca', 'pcaDetails', 'pcaZone'),
             },
 
-#            ParcellingsMapper: {
-#                'from': ('AncCommune', 'NumLot', 'DateLot', 'DateLotUrbanisme'),
-#                'to': ('isInSubdivision', 'parcellings',),
-#            },
-
-#            ParcellingRemarksMapper: {
-#                'from': ('PPAObservations',),
-#                'to': ('locationTechnicalRemarks',),
-#            },
+            ParcellingsMapper: {
+                'from': ('reflot', 'n°lot', 'datelot'),
+                'to': ('isInSubdivision', 'parcellings', 'subdivisionDetails'),
+            },
 
             ObservationsMapper: {
                 'from': ('caractéristiques', 'REMARQUES'),

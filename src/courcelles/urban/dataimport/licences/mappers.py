@@ -168,25 +168,33 @@ class PcaMapper(Mapper):
 
 class ParcellingsMapper(Mapper):
     def mapIsinsubdivision(self, line):
-        return any([self.getData('NumLot'), self.getData('DateLot'), self.getData('DateLotUrbanisme')])
+        return any([self.getData('reflot'), self.getData('n°lot')])
+
+    def mapSubdivisiondetails(self, line):
+        return self.getData('n°lot')
 
     def mapParcellings(self, line):
         if not self.mapIsinsubdivision(line):
             return []
-        auth_date = normalizeDate(self.getData('DateLot'))
-        approval_date = normalizeDate(self.getData('DateLotUrbanisme'))
-        raw_city = self.getData('AncCommune')
-        city = raw_city.split('-')
-        keywords = [approval_date] + city
-        if raw_city or approval_date:
-            parcellings = self.catalog(Title=keywords)
-            if len(parcellings) == 1:
-                return parcellings[0].getObject().UID()
-            keywords = [auth_date] + city
-            parcellings = self.catalog(Title=keywords)
-            if len(parcellings) == 1:
-                return parcellings[0].getObject().UID()
-            self.logError(self, line, 'Couldnt find parcelling or found too much parcelling', {'approval date': approval_date, 'auth_date': auth_date, 'city': raw_city})
+        ref = self.getData('reflot')
+        parcelling_id = self.getValueMapping('parcellings_map').get(ref, '')
+        portal = api.portal.get()
+        parcellings_folder = portal.urban.parcellings
+        if parcelling_id:
+            possible_ids = [id for id in parcellings_folder.objectIds() if id.startswith(parcelling_id + '-')]
+            parcelling = getattr(parcellings_folder, possible_ids[0])
+            return parcelling.UID()
+        else:
+            self.logError(
+                self,
+                line,
+                'Couldnt find parcelling',
+                {
+                    'reference': ref,
+                    'lot': self.getData('n°lot'),
+                    'auth_date': self.getData('datelot')
+                }
+            )
         return []
 
 
@@ -328,7 +336,7 @@ class ErrorsMapper(FinalMapper):
                 elif 'parse cadastral' in error.message:
                     error_trace.append('<p>ref cadastrale : %s %s %s</p>' % (data['division'], data['section'], data['ref']))
                 elif 'parcelling' in error.message:
-                    error_trace.append('<p>lotissement : %s %s, autorisé le %s</p>' % (data['approval date'], data['city'], data['auth_date']))
+                    error_trace.append('<p>lotissement : %s autorisé le %s (%s lots)</p>' % (data['reference'], data['auth_date'], data['lot']))
         error_trace = ''.join(error_trace)
         if type(error_trace) == type(u''):
             error_trace = error_trace.encode('utf-8')
@@ -577,8 +585,9 @@ class ParcelReferencesMapper(Mapper):
         return ''
 
     def getDivision(self):
-        raw_division = self.getData('lieu').lower()
+        raw_division = self.getData('lieu').lower().split(' ')[0]
         try:
+            raw_division = raw_division.split(' ')[0]
             division = self.getValueMapping('division_map')[raw_division]
         except:
             self.logError(self, self.line, 'No division found')
