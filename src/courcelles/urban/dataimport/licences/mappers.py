@@ -268,22 +268,22 @@ class OpinionsMapper(Mapper):
             opinions.append('dnf')
         if int(self.getData('transMONUMENTSITES')):
             opinions.append('crmsf')
-        # if int(self.getData('transMET')):
-        #    opinions.append('')
+        if int(self.getData('transMET')):
+            opinions.append('met')
         if int(self.getData('transSERVICEVOYER')):
             opinions.append('svp')
-        # if int(self.getData('transCHACUNLOGIS')):
-        #    opinions.append('')
-        # if int(self.getData('transIGRETEC')):
-        #    opinions.append('')
-        # if int(self.getData('transELECTRABEL')):
-        #    opinions.append('')
-        # if int(self.getData('transRAVel')):
-        #    opinions.append('')
+        if int(self.getData('transCHACUNLOGIS')):
+            opinions.append('chacun-logis')
+        if int(self.getData('transIGRETEC')):
+            opinions.append('igretec')
+        if int(self.getData('transELECTRABEL')):
+            opinions.append('electrabel')
+        if int(self.getData('transRAVel')):
+            opinions.append('ravel')
         if int(self.getData('transCCAT')):
             opinions.append('ccatm')
-        # if int(self.getData('transSRI')):
-        #    opinions.append('')
+        if int(self.getData('transSRI')):
+            opinions.append('sri')
         if int(self.getData('transAGRICULTURE')):
             opinions.append('agriculture')
         return opinions
