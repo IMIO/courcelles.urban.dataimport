@@ -125,17 +125,45 @@ class FolderZoneMapper(Mapper):
 
 class PcaMapper(Mapper):
     def mapIsinpca(self, line):
-        return bool(self.getData('DatePPA'))
+        return bool(self.getData('dateppa'))
 
     def mapPca(self, line):
         if not self.mapIsinpca(line):
             return []
-        pca_date = normalizeDate(self.getData('DatePPA'))
+        pca_date = normalizeDate(self.getData('dateppa'))
         pcas = self.catalog(Title=pca_date)
         if len(pcas) != 1:
             self.logError(self, line, 'Couldnt find pca or found too much pca', {'date': pca_date})
             return []
         return pcas[0].id
+
+    def mapPcadetails(self, line):
+        details = ''
+
+        if self.mapIsinpca(line):
+            pca_date = normalizeDate(self.getData('dateppa'))
+            pcas = self.catalog(Title=pca_date)
+            if len(pcas) != 1:
+                details = pca_date + ' ' + self.getData('refppa')
+
+        if not self.mapPcazone(line):
+            details = '{details}\n{pcazone}'.format(
+                details=details,
+                pcazone=self.getData('zonepca')
+            )
+
+        return details
+
+    def mapPcazone(self, line):
+        raw_pca = self.getData('zonepca').lower()
+        pcazone = []
+        if 'fermé' in raw_pca:
+            pcazone.append('zone-de-construction-d-habitation-fermee')
+        if 'semi' in raw_pca and 'ouverte' in raw_pca:
+            pcazone.append('zone-de-construction-semi-ouverte')
+        if 'cours et jardins' in raw_pca:
+            pcazone.append('zone-de-cours-et-jardins')
+        return pcazone
 
 
 class ParcellingsMapper(Mapper):
@@ -169,8 +197,7 @@ class ParcellingRemarksMapper(Mapper):
 
 class ObservationsMapper(Mapper):
     def mapDescription(self, line):
-        description = '<p>{car}</p><p>{rem}</p>'.format(
-            car=self.getData('caractéristiques'),
+        description = '<p>{rem}</p>'.format(
             rem=self.getData('REMARQUES')
         )
         return description
@@ -208,6 +235,21 @@ class InquiryEndMapper(Mapper):
         date = self.getData('finenquete')
         date = date and DateTime(date) or None
         return date
+
+
+class InquiryArticlesMapper(Mapper):
+    def mapInvestigationarticles(self, line):
+        raw_articles = self.getData('caractéristiques')
+        regex = '(?P<article>\d\d\d)(?: |-)(?P<paragraph>\d\d?)'
+        match = re.search(regex, raw_articles)
+        if match:
+            return ['{article}-{paragraph}'.format(** match.groupdict())]
+        return []
+
+    def mapInvestigationreasons(self, line):
+        if not self.mapInvestigationarticles(line):
+            return '<p>%s</p>' % self.getData('caractéristiques')
+        return '<p></p>'
 
 
 class ReclamationsMapper(Mapper):

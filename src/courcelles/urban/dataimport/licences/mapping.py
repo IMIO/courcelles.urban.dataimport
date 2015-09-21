@@ -24,6 +24,7 @@ from courcelles.urban.dataimport.licences.mappers import FolderZoneMapper
 from courcelles.urban.dataimport.licences.mappers import FoldermanagerMapper
 from courcelles.urban.dataimport.licences.mappers import IncompleteFolderDateMapper
 from courcelles.urban.dataimport.licences.mappers import IncompleteFolderEventTypeMapper
+from courcelles.urban.dataimport.licences.mappers import InquiryArticlesMapper
 from courcelles.urban.dataimport.licences.mappers import InquiryEndMapper
 from courcelles.urban.dataimport.licences.mappers import InquiryStartMapper
 from courcelles.urban.dataimport.licences.mappers import LicenceFactory
@@ -33,6 +34,7 @@ from courcelles.urban.dataimport.licences.mappers import ObservationsMapper
 from courcelles.urban.dataimport.licences.mappers import OpinionsMapper
 from courcelles.urban.dataimport.licences.mappers import ParcelFactory
 from courcelles.urban.dataimport.licences.mappers import ParcelReferencesMapper
+from courcelles.urban.dataimport.licences.mappers import PcaMapper
 from courcelles.urban.dataimport.licences.mappers import PortalTypeMapper
 from courcelles.urban.dataimport.licences.mappers import ReclamationsMapper
 from courcelles.urban.dataimport.licences.mappers import PrimoDateMapper
@@ -128,10 +130,10 @@ FIELDS_MAPPINGS = {
                 'to': ('folderZone', 'folderZoneDetails')
             },
 
-#            PcaMapper: {
-#                'from': ('DatePPA',),
-#                'to': ('isInPCA', 'pca',),
-#            },
+            PcaMapper: {
+                'from': ('dateppa', 'refppa', 'zonepca'),
+                'to': ('isInPCA', 'pca', 'pcaDetails', 'pcaZone'),
+            },
 
 #            ParcellingsMapper: {
 #                'from': ('AncCommune', 'NumLot', 'DateLot', 'DateLotUrbanisme'),
@@ -162,6 +164,11 @@ FIELDS_MAPPINGS = {
             InquiryEndMapper: {
                 'from': 'finenquete',
                 'to': 'investigationEnd',
+            },
+
+            InquiryArticlesMapper: {
+                'from': 'caractéristiques',
+                'to': ('investigationArticles', 'investigationReasons'),
             },
 
             ReclamationsMapper: {
