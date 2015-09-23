@@ -252,7 +252,9 @@ class InquiryArticlesMapper(Mapper):
         match = re.findall(regex, raw_articles)
         if match:
             return ['{}-{}'.format(m[0], m[1]) for m in match]
-        return ['4']
+        elif raw_articles:
+            return ['4']
+        return []
 
     def mapInvestigationreasons(self, line):
         if self.mapInvestigationarticles(line) == ['4']:
