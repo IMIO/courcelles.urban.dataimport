@@ -248,14 +248,14 @@ class InquiryEndMapper(Mapper):
 class InquiryArticlesMapper(Mapper):
     def mapInvestigationarticles(self, line):
         raw_articles = self.getData('caractéristiques')
-        regex = '(?P<article>\d\d\d)(?: |-)(?P<paragraph>\d\d?)'
-        match = re.search(regex, raw_articles)
+        regex = '(\d\d\d)(?: |-)(\d\d?)'
+        match = re.findall(regex, raw_articles)
         if match:
-            return ['{article}-{paragraph}'.format(** match.groupdict())]
-        return []
+            return ['{}-{}'.format(m[0], m[1]) for m in match]
+        return ['4']
 
     def mapInvestigationreasons(self, line):
-        if not self.mapInvestigationarticles(line):
+        if self.mapInvestigationarticles(line) == ['4']:
             return '<p>%s</p>' % self.getData('caractéristiques')
         return '<p></p>'
 
