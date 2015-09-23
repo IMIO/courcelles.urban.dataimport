@@ -168,7 +168,7 @@ class PcaMapper(Mapper):
 
 class ParcellingsMapper(Mapper):
     def mapIsinsubdivision(self, line):
-        return any([self.getData('reflot'), self.getData('n°lot')])
+        return any([self.getData('reflot'), self.getData('n°lot'), self.getData('datelot')])
 
     def mapSubdivisiondetails(self, line):
         return self.getData('n°lot')
