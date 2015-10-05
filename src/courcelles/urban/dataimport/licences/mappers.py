@@ -231,6 +231,16 @@ class ArchitectMapper(PostCreationMapper):
         return []
 
 
+class UsageMapper(Mapper):
+    def mapUsage(self, line):
+        raw_usage = self.getData('modele')
+        if raw_usage == '1':
+            return 'for_habitation'
+        elif raw_usage == '2':
+            return 'not_for_habitation'
+        return 'not_applicable'
+
+
 class InquiryStartMapper(Mapper):
     def mapInvestigationstart(self, line):
         date = self.getData('débutenquete')
@@ -726,6 +736,20 @@ class PrimoDateMapper(Mapper):
             raise NoObjectToCreateException
         return date
 
+
+class PrimoDecisionMapper(Mapper):
+    def mapExternaldecision(self, line):
+        raw_decision = self.getData('typeavis')
+        decision = self.getValueMapping('externaldecisions_map').get(raw_decision, [])
+        return decision
+
+
+class PrimoDecisionDateMapper(Mapper):
+    def mapDecisiondate(self, line):
+        date = self.getData('dateavisfoncdelegue')
+        date = date and DateTime(date) or None
+        return date
+
 #
 # UrbanEvent College Report
 #
@@ -769,20 +793,6 @@ class SecondRWEventTypeMapper(Mapper):
 class SecondRWEventDateMapper(Mapper):
     def mapEventdate(self, line):
         date = self.getData('dateenvoiaviscol')
-        date = date and DateTime(date) or None
-        return date
-
-
-class SecondRWDecisionMapper(Mapper):
-    def mapExternaldecision(self, line):
-        raw_decision = self.getData('typeavis')
-        decision = self.getValueMapping('externaldecisions_map').get(raw_decision, [])
-        return decision
-
-
-class SecondRWDecisionDateMapper(Mapper):
-    def mapDecisiondate(self, line):
-        date = self.getData('dateavisfoncdelegue')
         date = date and DateTime(date) or None
         return date
 

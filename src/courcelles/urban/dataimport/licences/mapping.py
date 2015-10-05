@@ -39,14 +39,15 @@ from courcelles.urban.dataimport.licences.mappers import PcaMapper
 from courcelles.urban.dataimport.licences.mappers import PortalTypeMapper
 from courcelles.urban.dataimport.licences.mappers import ReclamationsMapper
 from courcelles.urban.dataimport.licences.mappers import PrimoDateMapper
+from courcelles.urban.dataimport.licences.mappers import PrimoDecisionDateMapper
+from courcelles.urban.dataimport.licences.mappers import PrimoDecisionMapper
 from courcelles.urban.dataimport.licences.mappers import PrimoEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import RemovalDateMapper
 from courcelles.urban.dataimport.licences.mappers import RemovalEventTypeMapper
-from courcelles.urban.dataimport.licences.mappers import SecondRWDecisionDateMapper
-from courcelles.urban.dataimport.licences.mappers import SecondRWDecisionMapper
 from courcelles.urban.dataimport.licences.mappers import SecondRWEventDateMapper
 from courcelles.urban.dataimport.licences.mappers import SecondRWEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import UrbanEventFactory
+from courcelles.urban.dataimport.licences.mappers import UsageMapper
 from courcelles.urban.dataimport.licences.mappers import WorksStartEventDateMapper
 from courcelles.urban.dataimport.licences.mappers import WorksStartEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import WorksEndEventDateMapper
@@ -150,6 +151,12 @@ FIELDS_MAPPINGS = {
                 'allowed_containers': ['BuildLicence'],
                 'from': 'architecte',
                 'to': 'architects',
+            },
+
+            UsageMapper: {
+                'allowed_containers': ['BuildLicence'],
+                'from': 'modele',
+                'to': 'usage',
             },
 
             InquiryStartMapper: {
@@ -321,6 +328,16 @@ FIELDS_MAPPINGS = {
                 'from': 'dateenvoiprédossier',
                 'to': 'eventDate',
             },
+
+            PrimoDecisionMapper: {
+                'from': 'typeavis',
+                'to': 'externalDecision',
+            },
+
+            PrimoDecisionDateMapper: {
+                'from': 'dateavisfoncdelegue',
+                'to': 'decisionDate',
+            },
         },
     },
 
@@ -358,16 +375,6 @@ FIELDS_MAPPINGS = {
             SecondRWEventDateMapper: {
                 'from': 'dateenvoiaviscol',
                 'to': 'eventDate',
-            },
-
-            SecondRWDecisionMapper: {
-                'from': 'typeavis',
-                'to': 'externalDecision',
-            },
-
-            SecondRWDecisionDateMapper: {
-                'from': 'dateavisfoncdelegue',
-                'to': 'decisionDate',
             },
         },
     },
