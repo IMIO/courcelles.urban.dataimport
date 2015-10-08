@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from courcelles.urban.dataimport.licences.mappers import ArchitectMapper
+from courcelles.urban.dataimport.licences.mappers import CollegeReportDateMapper
+from courcelles.urban.dataimport.licences.mappers import CollegeReportEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import CompleteFolderDateMapper
 from courcelles.urban.dataimport.licences.mappers import CompleteFolderEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import CompletionStateMapper
@@ -11,6 +13,7 @@ from courcelles.urban.dataimport.licences.mappers import ContactSreetMapper
 from courcelles.urban.dataimport.licences.mappers import ContactTitleMapper
 from courcelles.urban.dataimport.licences.mappers import DecisionDateMapper
 from courcelles.urban.dataimport.licences.mappers import DecisionEventTypeMapper
+from courcelles.urban.dataimport.licences.mappers import DeclarationDecisionEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import DecisionMapper
 from courcelles.urban.dataimport.licences.mappers import DelayMapper
 from courcelles.urban.dataimport.licences.mappers import DepositDateMapper
@@ -22,10 +25,15 @@ from courcelles.urban.dataimport.licences.mappers import InquiryEndMapper
 from courcelles.urban.dataimport.licences.mappers import InquiryStartMapper
 from courcelles.urban.dataimport.licences.mappers import LicenceFactory
 from courcelles.urban.dataimport.licences.mappers import NotificationDateMapper
+from courcelles.urban.dataimport.licences.mappers import NotificationEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import ParcelFactory
 from courcelles.urban.dataimport.licences.mappers import ParcelReferencesMapper
 from courcelles.urban.dataimport.licences.mappers import PrimoDateMapper
 from courcelles.urban.dataimport.licences.mappers import PrimoEventTypeMapper
+from courcelles.urban.dataimport.licences.mappers import RemovalDateMapper
+from courcelles.urban.dataimport.licences.mappers import RemovalEventTypeMapper
+from courcelles.urban.dataimport.licences.mappers import SecondRWEventDateMapper
+from courcelles.urban.dataimport.licences.mappers import SecondRWEventTypeMapper
 from courcelles.urban.dataimport.licences.mappers import UrbanEventFactory
 from courcelles.urban.dataimport.licences.mappers import WorklocationMapper
 
@@ -43,7 +51,12 @@ OBJECTS_NESTING = [
             ('INCOMPLETE FOLDER EVENT', []),
             ('COMPLETE FOLDER EVENT', []),
             ('PRIMO RW EVENT', []),
+            ('COLLEGE REPORT EVENT', []),
+            ('SECOND RW EVENT', []),
             ('DECISION EVENT', []),
+            ('DECLARATION DECISION EVENT', []),
+            ('NOTIFICATION EVENT', []),
+            ('REMOVAL EVENT', []),
         ],
     ),
 ]
@@ -260,9 +273,49 @@ FIELDS_MAPPINGS = {
         },
     },
 
+    'COLLEGE REPORT EVENT':
+    {
+        'factory': [UrbanEventFactory],
+
+        'allowed_containers': ['BuildLicence', 'ParcelOutLicence'],
+
+        'mappers': {
+            CollegeReportEventTypeMapper: {
+                'from': (),
+                'to': 'eventtype',
+            },
+
+            CollegeReportDateMapper: {
+                'from': 'dateaviscol',
+                'to': 'eventDate',
+            },
+        },
+    },
+
+    'SECOND RW EVENT':
+    {
+        'factory': [UrbanEventFactory],
+
+        'allowed_containers': ['BuildLicence', 'ParcelOutLicence'],
+
+        'mappers': {
+            SecondRWEventTypeMapper: {
+                'from': (),
+                'to': 'eventtype',
+            },
+
+            SecondRWEventDateMapper: {
+                'from': 'dateenvoiaviscol',
+                'to': 'eventDate',
+            },
+        },
+    },
+
     'DECISION EVENT':
     {
         'factory': [UrbanEventFactory],
+
+        'allowed_containers': ['BuildLicence', 'ParcelOutLicence'],
 
         'mappers': {
             DecisionEventTypeMapper: {
@@ -283,6 +336,68 @@ FIELDS_MAPPINGS = {
             DecisionMapper: {
                 'from': ('datepermis', 'daterefus'),
                 'to': 'decision',
+            },
+        },
+    },
+
+    'DECLARATION DECISION EVENT':
+    {
+        'factory': [UrbanEventFactory],
+
+        'allowed_containers': ['Declaration'],
+
+        'mappers': {
+            DeclarationDecisionEventTypeMapper: {
+                'from': (),
+                'to': 'eventtype',
+            },
+
+            DecisionDateMapper: {
+                'from': ('datepermis', 'daterefus'),
+                'to': 'eventDate',
+            },
+
+            DecisionMapper: {
+                'from': ('datepermis', 'daterefus'),
+                'to': 'decision',
+            },
+        },
+    },
+
+    'NOTIFICATION EVENT':
+    {
+        'factory': [UrbanEventFactory],
+
+        'allowed_containers': ['Declaration'],
+
+        'mappers': {
+            NotificationEventTypeMapper: {
+                'from': (),
+                'to': 'eventtype',
+            },
+
+            NotificationDateMapper: {
+                'from': 'dateenvoipermis',
+                'to': 'eventDate',
+            },
+        },
+    },
+
+    'REMOVAL EVENT':
+    {
+        'factory': [UrbanEventFactory],
+
+        'allowed_containers': ['BuildLicence', 'ParcelOutLicence'],
+
+        'mappers': {
+            RemovalEventTypeMapper: {
+                'from': (),
+                'to': 'eventtype',
+            },
+
+            RemovalDateMapper: {
+                'from': ('datepermis', 'daterefus'),
+                'to': 'eventDate',
             },
         },
     },
