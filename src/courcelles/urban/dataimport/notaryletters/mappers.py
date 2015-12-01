@@ -281,7 +281,7 @@ class ParcelReferencesMapper(Mapper):
                 line,
                 'Cannot parse cadastral reference',
                 {
-                    'division': self.getData('lieu'),
+                    'division': self.getData('localitebien'),
                     'section': self.getData('section'),
                     'ref': self.getData('numérocadastral')
                 }
