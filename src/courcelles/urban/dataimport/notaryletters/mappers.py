@@ -41,7 +41,8 @@ class PortaltypeMapper(Mapper):
 
 class ReferenceMapper(Mapper):
     def mapReference(self, line):
-        reference = 'NOT/{}'.format(self.getData('N°'))
+        ref = int(self.getData('CU1')) and 'CU1' or 'NOT'
+        reference = '{}/{}'.format(ref, self.getData('N°'))
         return reference
 
 
@@ -89,6 +90,61 @@ class WorklocationMapper(Mapper):
                 'address': '%s' % raw_street,
             })
         return ({},)
+
+
+class SpecificFeaturesMapper(Mapper):
+    def mapCustomspecificfeatures(self, line):
+        lines = []
+
+        folderzone = self.getData('zonesecteur')
+        if folderzone:
+            lines.append({'text': 'zonage au plan de secteur: {}'.format(folderzone)})
+
+        pca = self.getData('zonepca')
+        if pca:
+            lines.append({'text': 'zone pca: {}'.format(pca)})
+
+        pca_date = self.getData('pcadate')
+        if pca_date:
+            lines.append({'text': 'date pca: {}'.format(pca_date.split()[0])})
+
+        ref_lot = self.getData('lotissementref')
+        if ref_lot:
+            lot = 'lotissement: {}, lot n°: {}'.format(
+                ref_lot,
+                self.getData('n°lot')
+            )
+            lines.append({'text': lot})
+
+        buildlicence = self.getData('permisbatirref')
+        if buildlicence:
+            licence_line = 'permis de batir {} délivré le {}'.format(
+                buildlicence,
+                self.getData('permisbatirdate')
+            )
+            lines.append({'text': licence_line})
+
+        rem_urba = self.getData('remarqueurbanisme')
+        if rem_urba:
+            lines.append({'text': ': {}'.format(rem_urba)})
+
+        inhabitable = self.getData('inabitabilite')
+        if inhabitable:
+            lines.append({'text': ': {}'.format(inhabitable)})
+
+        site_eco = self.getData('siteeconomique')
+        if site_eco:
+            lines.append({'text': ': {}'.format(site_eco)})
+
+        env_licence = self.getData('permisenviron')
+        if env_licence:
+            lines.append({'text': ': {}'.format(env_licence)})
+
+        rem_env = self.getData('remarqueenvironnement')
+        if rem_env:
+            lines.append({'text': ': {}'.format(rem_env)})
+
+        return lines
 
 
 class ObservationsMapper(Mapper):

@@ -15,6 +15,7 @@ from courcelles.urban.dataimport.notaryletters.mappers import PortaltypeMapper
 from courcelles.urban.dataimport.notaryletters.mappers import ParcelFactory
 from courcelles.urban.dataimport.notaryletters.mappers import ParcelReferencesMapper
 from courcelles.urban.dataimport.notaryletters.mappers import ReferenceMapper
+from courcelles.urban.dataimport.notaryletters.mappers import SpecificFeaturesMapper
 from courcelles.urban.dataimport.notaryletters.mappers import UrbanEventFactory
 from courcelles.urban.dataimport.notaryletters.mappers import WorklocationMapper
 
@@ -50,7 +51,7 @@ FIELDS_MAPPINGS = {
             },
 
             ReferenceMapper: {
-                'from': 'N°',
+                'from': ('CU1', 'N°'),
                 'to': 'reference',
             },
 
@@ -62,6 +63,25 @@ FIELDS_MAPPINGS = {
             WorklocationMapper: {
                 'from': ('localitebien', 'ruebien'),
                 'to': 'workLocations',
+            },
+
+            SpecificFeaturesMapper: {
+                'from': (
+                    'zonesecteur',
+                    'zonepca',
+                    'pcadate',
+                    'lotissementref',
+                    'lotissementdate',
+                    'n°lot',
+                    'permisbatirref',
+                    'permisbatirdate',
+                    'remarqueurbanisme',
+                    'inabitabilite',
+                    'siteeconomique',
+                    'permisenviron',
+                    'remarqueenvironnement',
+                ),
+                'to': 'customSpecificFeatures',
             },
 
             ObservationsMapper: {
@@ -136,7 +156,7 @@ FIELDS_MAPPINGS = {
 
         'mappers': {
             DeliveryEventTypeMapper: {
-                'from': ('CU1'),
+                'from': 'CU1',
                 'to': 'eventtype',
             },
 
