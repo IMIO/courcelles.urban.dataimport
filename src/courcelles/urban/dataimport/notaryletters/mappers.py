@@ -25,10 +25,44 @@ import re
 
 class NotaryletterFactory(BaseFactory):
     def getCreationPlace(self, factory_args):
-        path = '%s/urban/notaryletters' % self.site.absolute_url_path()
+        portal_type = factory_args.get('portal_type')
+        folder = portal_type == 'NotaryLetter' and 'notaryletters' or 'urbancertificateones'
+        path = '{}/urban/{}'.format(self.site.absolute_url_path(), folder)
         return self.site.restrictedTraverse(path)
 
 # mappers
+
+
+class PortaltypeMapper(Mapper):
+    def mapPortal_type(self, line):
+        portal_type = int(self.getData('CU1')) and 'UrbanCertificateOne' or 'NotaryLetter'
+        return portal_type
+
+
+class ReferenceMapper(Mapper):
+    def mapReference(self, line):
+        reference = 'NOT/{}'.format(self.getData('N°'))
+        return reference
+
+
+class NotaryMapper(PostCreationMapper):
+    def mapNotarycontact(self, line, plone_object):
+        notaire_name = self.getData('NOM')  # self.getData('notaire')
+        fullname = cleanAndSplitWord(notaire_name)
+        if not fullname:
+            return []
+        noisy_words = ['monsieur', 'madame', 'notaire', '&', ',', '.', 'or', 'mr', 'mme', '/']
+        name_keywords = [word.lower() for word in fullname if word.lower() not in noisy_words and len(word) > 2]
+        notaries = self.catalog(portal_type='Notary', Title=name_keywords)
+        if len(notaries) == 1:
+            return notaries[0].getObject()
+        self.logError(self, line, 'No notaries found or too much notaries found',
+                      {
+                          'raw_name': notaire_name,
+                          'name': name_keywords,
+                          'search_result': len(notaries)
+                      })
+        return []
 
 
 class WorklocationMapper(Mapper):
@@ -86,8 +120,8 @@ class ErrorsMapper(FinalMapper):
                 data = error.data
                 if 'street' in error.message:
                     error_trace.append('<p>adresse : %s</p>' % data['address'])
-                elif 'architects' in error.message:
-                    error_trace.append('<p>architecte : %s</p>' % data['raw_name'])
+                elif 'notaries' in error.message:
+                    error_trace.append('<p>notaire : %s</p>' % data['raw_name'])
                 elif 'parse cadastral' in error.message:
                     error_trace.append('<p>ref cadastrale : %s %s %s</p>' % (data['division'], data['section'], data['ref']))
                 elif 'parcelling' in error.message:
@@ -353,7 +387,7 @@ class DepositEventTypeMapper(Mapper):
 
 class DepositDateMapper(Mapper):
     def mapEventdate(self, line):
-        date = self.getData('daterecepisse')
+        date = self.getData('daterecu')
         date = date and DateTime(date) or None
         if not date:
             raise NoObjectToCreateException
@@ -361,24 +395,24 @@ class DepositDateMapper(Mapper):
 
 
 #
-# UrbanEvent works end
+# UrbanEvent delivery
 #
 
 #mappers
 
 
-class WorksEndEventTypeMapper(Mapper):
+class DeliveryEventTypeMapper(Mapper):
     def mapEventtype(self, line):
         licence = self.importer.current_containers_stack[-1]
         urban_tool = api.portal.get_tool('portal_urban')
-        eventtype_id = 'fin-des-travaux'
+        eventtype_id = int(self.getData('CU1')) and 'octroi-cu1' or 'octroi-lettre-notaire'
         config = urban_tool.getUrbanConfig(licence)
         return getattr(config.urbaneventtypes, eventtype_id).UID()
 
 
-class WorksEndEventDateMapper(Mapper):
+class DeliveryEventDateMapper(Mapper):
     def mapEventdate(self, line):
-        date = self.getData('fintravaux')
+        date = self.getData('dateenvoi')
         date = date and DateTime(date) or None
         if not date:
             raise NoObjectToCreateException

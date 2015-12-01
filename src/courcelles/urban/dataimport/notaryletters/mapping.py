@@ -3,16 +3,19 @@
 from courcelles.urban.dataimport.notaryletters.mappers import CompletionStateMapper
 from courcelles.urban.dataimport.notaryletters.mappers import ContactFactory
 from courcelles.urban.dataimport.notaryletters.mappers import ContactIdMapper
+from courcelles.urban.dataimport.notaryletters.mappers import DeliveryEventDateMapper
+from courcelles.urban.dataimport.notaryletters.mappers import DeliveryEventTypeMapper
 from courcelles.urban.dataimport.notaryletters.mappers import DepositDateMapper
 from courcelles.urban.dataimport.notaryletters.mappers import DepositEventTypeMapper
 from courcelles.urban.dataimport.notaryletters.mappers import ErrorsMapper
+from courcelles.urban.dataimport.notaryletters.mappers import NotaryMapper
 from courcelles.urban.dataimport.notaryletters.mappers import NotaryletterFactory
 from courcelles.urban.dataimport.notaryletters.mappers import ObservationsMapper
+from courcelles.urban.dataimport.notaryletters.mappers import PortaltypeMapper
 from courcelles.urban.dataimport.notaryletters.mappers import ParcelFactory
 from courcelles.urban.dataimport.notaryletters.mappers import ParcelReferencesMapper
+from courcelles.urban.dataimport.notaryletters.mappers import ReferenceMapper
 from courcelles.urban.dataimport.notaryletters.mappers import UrbanEventFactory
-from courcelles.urban.dataimport.notaryletters.mappers import WorksEndEventDateMapper
-from courcelles.urban.dataimport.notaryletters.mappers import WorksEndEventTypeMapper
 from courcelles.urban.dataimport.notaryletters.mappers import WorklocationMapper
 
 from imio.urban.dataimport.access.mapper import AccessSimpleMapper as SimpleMapper
@@ -22,8 +25,8 @@ OBJECTS_NESTING = [
         'LICENCE', [
             ('CONTACT', []),
             ('PARCEL', []),
-#            ('DEPOSIT EVENT', []),
-#            ('WORKS END EVENT', []),
+            ('DEPOSIT EVENT', []),
+            ('DELIVERY EVENT', []),
         ],
     ),
 ]
@@ -31,7 +34,7 @@ OBJECTS_NESTING = [
 FIELDS_MAPPINGS = {
     'LICENCE':
     {
-        'factory': [NotaryletterFactory, {'portal_type': 'NotaryLetter'}],
+        'factory': [NotaryletterFactory],
 
         'mappers': {
             SimpleMapper: (
@@ -39,11 +42,22 @@ FIELDS_MAPPINGS = {
                     'from': 'N°',
                     'to': 'id',
                 },
-                {
-                    'from': 'N°',
-                    'to': 'reference',
-                },
             ),
+
+            PortaltypeMapper: {
+                'from': 'CU1',
+                'to': 'portal_type'
+            },
+
+            ReferenceMapper: {
+                'from': 'N°',
+                'to': 'reference',
+            },
+
+            NotaryMapper: {
+                'from': 'NOM',  # 'from': 'notaire',
+                'to': 'notaryContact',
+            },
 
             WorklocationMapper: {
                 'from': ('localitebien', 'ruebien'),
@@ -51,7 +65,7 @@ FIELDS_MAPPINGS = {
             },
 
             ObservationsMapper: {
-                'from': ('caractéristiques', 'REMARQUES'),
+                'from': ('caractéristiques', 'remarqueurbanisme'),
                 'to': 'description',
             },
 
@@ -110,26 +124,24 @@ FIELDS_MAPPINGS = {
             },
 
             DepositDateMapper: {
-                'from': 'daterecepisse',
+                'from': 'daterecu',
                 'to': 'eventDate',
             }
         },
     },
 
-    'WORKS END EVENT':
+    'DELIVERY EVENT':
     {
         'factory': [UrbanEventFactory],
 
-        'allowed_containers': ['BuildLicence'],
-
         'mappers': {
-            WorksEndEventTypeMapper: {
-                'from': (),
+            DeliveryEventTypeMapper: {
+                'from': ('CU1'),
                 'to': 'eventtype',
             },
 
-            WorksEndEventDateMapper: {
-                'from': 'fintravaux',
+            DeliveryEventDateMapper: {
+                'from': 'dateenvoi',
                 'to': 'eventDate',
             },
         },
