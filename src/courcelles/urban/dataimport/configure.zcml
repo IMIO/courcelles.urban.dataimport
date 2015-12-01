@@ -16,6 +16,7 @@
 
     <include package=".architects" />
     <include package=".notaries" />
+    <include package=".notaryletters" />
     <include package=".parcellings" />
     <include package=".licences" />
     <include package=".parceloutlicences" />
