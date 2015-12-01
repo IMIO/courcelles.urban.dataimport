@@ -283,7 +283,7 @@ class ParcelReferencesMapper(Mapper):
                 {
                     'division': self.getData('localitebien'),
                     'section': self.getData('section'),
-                    'ref': self.getData('numérocadastral')
+                    'ref': self.getData('cadastre')
                 }
             )
             return []
