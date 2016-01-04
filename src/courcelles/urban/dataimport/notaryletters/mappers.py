@@ -87,7 +87,7 @@ class WorklocationMapper(Mapper):
                 })
         else:
             self.logError(self, line, 'Couldnt parse street and number', {
-                'address': '%s' % raw_street,
+                'address': '%s' % raw_street.encode('utf-8'),
             })
         return ({},)
 
